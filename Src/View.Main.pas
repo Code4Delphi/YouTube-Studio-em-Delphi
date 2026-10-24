@@ -172,7 +172,7 @@ implementation
 {$R *.dfm}
 
 const
-  ARQUIVO_CONFIGURACAO = 'config.exemplo.ini';
+  ARQUIVO_CONFIGURACAO = 'config.ini';
   NIVEIS_BUSCA_CONFIGURACAO = 2;
   PASTA_TOKENS = 'YouTubeStudioDelphi';
   ARQUIVO_TOKENS = 'tokens.ini';

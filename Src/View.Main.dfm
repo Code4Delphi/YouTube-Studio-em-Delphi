@@ -26,7 +26,6 @@ object ViewMain: TViewMain
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitTop = -6
     object lbStatus: TLabel
       Left = 890
       Top = 28
@@ -90,8 +89,6 @@ object ViewMain: TViewMain
     ActivePage = tabVideos
     Align = alClient
     TabOrder = 1
-    ExplicitTop = 52
-    ExplicitHeight = 634
     object tabVideos: TTabSheet
       Caption = 'Meus v'#237'deos'
       object pnVideosLista: TPanel
@@ -102,7 +99,6 @@ object ViewMain: TViewMain
         Align = alLeft
         BevelOuter = bvNone
         TabOrder = 0
-        ExplicitHeight = 596
         object pnVideosBotoes: TPanel
           Left = 0
           Top = 0
@@ -146,7 +142,6 @@ object ViewMain: TViewMain
           Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goRowSelect]
           TabOrder = 1
           OnSelectCell = strGridVideosSelectCell
-          ExplicitTop = 51
           ColWidths = (
             300
             125
@@ -161,7 +156,6 @@ object ViewMain: TViewMain
         Align = alClient
         BevelOuter = bvNone
         TabOrder = 1
-        ExplicitHeight = 596
         object gBoxDetalhes: TGroupBox
           AlignWithMargins = True
           Left = 3
@@ -172,7 +166,6 @@ object ViewMain: TViewMain
           Align = alClient
           Caption = ' Detalhes do v'#237'deo '
           TabOrder = 0
-          ExplicitHeight = 494
           DesignSize = (
             541
             489)
@@ -256,7 +249,6 @@ object ViewMain: TViewMain
             Anchors = [akLeft, akTop, akRight, akBottom]
             ScrollBars = ssVertical
             TabOrder = 3
-            ExplicitHeight = 198
           end
           object btnSalvarAlteracoes: TButton
             Left = 16
@@ -267,7 +259,6 @@ object ViewMain: TViewMain
             Caption = 'Salvar altera'#231#245'es'
             TabOrder = 4
             OnClick = btnSalvarAlteracoesClick
-            ExplicitTop = 446
           end
           object btnExcluirVideo: TButton
             Left = 385
@@ -278,7 +269,6 @@ object ViewMain: TViewMain
             Caption = 'Excluir v'#237'deo'
             TabOrder = 5
             OnClick = btnExcluirVideoClick
-            ExplicitTop = 446
           end
         end
         object gBoxAvaliacao: TGroupBox
@@ -291,7 +281,6 @@ object ViewMain: TViewMain
           Align = alBottom
           Caption = ' Minha avalia'#231#227'o '
           TabOrder = 1
-          ExplicitTop = 503
           object lbAvaliacaoAtual: TLabel
             Left = 16
             Top = 62
@@ -524,7 +513,6 @@ object ViewMain: TViewMain
         Indent = 19
         ReadOnly = True
         TabOrder = 1
-        ExplicitHeight = 538
       end
     end
   end

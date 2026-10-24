@@ -79,4 +79,4 @@ __recovery/
 *.stat
 
 # Credenciais do Google gravadas pelo app (ClientID e Secret)
-config.exemplo.ini
+config.ini
