@@ -16,13 +16,13 @@ Demo VCL do componente `TTMSFNCCloudGoogleYouTube` (TMS FNC Cloud Pack) que gere
 
 ## Configuração do app
 
-O ClientID e o Secret não ficam no projeto, para não aparecerem na gravação. Na primeira execução o app cria o arquivo:
+Informe o ClientID e o Secret nos campos do topo da tela e clique em **Conectar**. O app grava os dois valores em [config.exemplo.ini](config.exemplo.ini) e os carrega nos campos na próxima abertura.
 
-```
-%APPDATA%\YouTubeStudioDelphi\config.ini
-```
+O app procura o `config.exemplo.ini` na pasta do executável e em até duas pastas acima dela. Assim, rodando de `bin\` ou de `Win32\Debug\`, ele usa o arquivo da raiz do projeto. Se não encontrar, cria o arquivo ao lado do executável.
 
-Preencha esse arquivo seguindo o modelo [config.exemplo.ini](config.exemplo.ini). Os tokens de acesso ficam em `tokens.ini`, na mesma pasta.
+Os tokens de acesso ficam fora do projeto, em `%APPDATA%\YouTubeStudioDelphi\tokens.ini`.
+
+> Com dados reais, o `config.exemplo.ini` guarda o Secret em texto puro. Por isso ele está no `.gitignore`; não o abra durante a gravação. O campo Secret é mascarado na tela.
 
 ## Como compilar
 

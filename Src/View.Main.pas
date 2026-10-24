@@ -32,7 +32,8 @@ uses
   VCL.TMSFNCCloudOAuth,
   VCL.TMSFNCCloudGoogle,
   VCL.TMSFNCCloudGoogleYouTube,
-  VCL.TMSFNCCloudImage, VCL.TMSFNCGraphics;
+  VCL.TMSFNCCloudImage,
+  VCL.TMSFNCGraphics;
 
 type
   TViewMain = class(TForm)
@@ -92,8 +93,8 @@ type
     tmrSorteio: TTimer;
     OpenDialogVideo: TOpenDialog;
     YouTube: TTMSFNCCloudGoogleYouTube;
-    ClientID: TLabel;
-    Label2: TLabel;
+    lbClientID: TLabel;
+    lbSecret: TLabel;
     edtClientID: TEdit;
     edtSecret: TEdit;
     procedure FormCreate(Sender: TObject);
@@ -142,6 +143,7 @@ type
     FVideoSelecionado: TTMSFNCCloudGoogleYouTubeVideo;
     FParticipantes: TList<TTMSFNCCloudGoogleYouTubeCommentThread>;
     procedure CarregarConfiguracao;
+    procedure SalvarConfiguracao;
     procedure ConfigurarGrid;
     procedure AtualizarEstadoTela;
     procedure CarregarPrimeiraPagina;
@@ -156,6 +158,7 @@ type
     procedure Avaliar(const ARating: TTMSFNCCloudGoogleYouTubeRating);
     procedure AbrirURL(const AURL: string);
     procedure MostrarErro(const AMensagem: string; const ARequestResult: TTMSFNCCloudBaseRequestResult);
+    function LocalizarArquivoConfiguracao: string;
     function EscaparJSON(const AValor: string): string;
     function TextoEmUmaLinha(const AValor: string): string;
     function DescricaoAvaliacao(const ARating: TTMSFNCCloudGoogleYouTubeRating): string;
@@ -169,8 +172,9 @@ implementation
 {$R *.dfm}
 
 const
-  PASTA_CONFIGURACAO = 'YouTubeStudioDelphi';
-  ARQUIVO_CONFIGURACAO = 'config.ini';
+  ARQUIVO_CONFIGURACAO = 'config.exemplo.ini';
+  NIVEIS_BUSCA_CONFIGURACAO = 2;
+  PASTA_TOKENS = 'YouTubeStudioDelphi';
   ARQUIVO_TOKENS = 'tokens.ini';
   SECAO_GOOGLE = 'Google';
   CALLBACK_URL_PADRAO = 'http://127.0.0.1:8888/';
@@ -208,29 +212,50 @@ end;
 
 procedure TViewMain.CarregarConfiguracao;
 begin
-  // Credenciais e tokens ficam fora da pasta do projeto para não aparecerem na gravação
-  var LPasta := TPath.Combine(TPath.GetHomePath, PASTA_CONFIGURACAO);
-  ForceDirectories(LPasta);
-  FArquivoConfiguracao := TPath.Combine(LPasta, ARQUIVO_CONFIGURACAO);
-
+  FArquivoConfiguracao := Self.LocalizarArquivoConfiguracao;
   var LIni := TIniFile.Create(FArquivoConfiguracao);
   try
-    if not LIni.SectionExists(SECAO_GOOGLE) then
-    begin
-      LIni.WriteString(SECAO_GOOGLE, 'ClientID', '');
-      LIni.WriteString(SECAO_GOOGLE, 'Secret', '');
-      LIni.WriteString(SECAO_GOOGLE, 'CallBackURL', CALLBACK_URL_PADRAO);
-    end;
-
-    YouTube.Authentication.ClientID := Trim(LIni.ReadString(SECAO_GOOGLE, 'ClientID', ''));
-    YouTube.Authentication.Secret := Trim(LIni.ReadString(SECAO_GOOGLE, 'Secret', ''));
+    edtClientID.Text := Trim(LIni.ReadString(SECAO_GOOGLE, 'ClientID', ''));
+    edtSecret.Text := Trim(LIni.ReadString(SECAO_GOOGLE, 'Secret', ''));
     YouTube.Authentication.CallBackURL := Trim(LIni.ReadString(SECAO_GOOGLE, 'CallBackURL', CALLBACK_URL_PADRAO));
   finally
     LIni.Free;
   end;
 
+  // Os tokens de acesso continuam fora da pasta do projeto
+  var LPastaTokens := TPath.Combine(TPath.GetHomePath, PASTA_TOKENS);
+  ForceDirectories(LPastaTokens);
   YouTube.PersistTokens.Location := plIniFile;
-  YouTube.PersistTokens.Key := TPath.Combine(LPasta, ARQUIVO_TOKENS);
+  YouTube.PersistTokens.Key := TPath.Combine(LPastaTokens, ARQUIVO_TOKENS);
+end;
+
+procedure TViewMain.SalvarConfiguracao;
+begin
+  var LIni := TIniFile.Create(FArquivoConfiguracao);
+  try
+    LIni.WriteString(SECAO_GOOGLE, 'ClientID', Trim(edtClientID.Text));
+    LIni.WriteString(SECAO_GOOGLE, 'Secret', Trim(edtSecret.Text));
+    LIni.WriteString(SECAO_GOOGLE, 'CallBackURL', YouTube.Authentication.CallBackURL);
+  finally
+    LIni.Free;
+  end;
+end;
+
+function TViewMain.LocalizarArquivoConfiguracao: string;
+begin
+  // Procura na pasta do executável e nas pastas acima dela (ex.: bin\ ou Win32\Debug\ dentro do projeto)
+  var LPasta := ExtractFilePath(ParamStr(0));
+  for var I := 0 to NIVEIS_BUSCA_CONFIGURACAO do
+  begin
+    Result := TPath.Combine(LPasta, ARQUIVO_CONFIGURACAO);
+    if FileExists(Result) then
+      Exit;
+
+    LPasta := ExtractFilePath(ExcludeTrailingPathDelimiter(LPasta));
+  end;
+
+  // Se não encontrar, cria o arquivo ao lado do executável
+  Result := TPath.Combine(ExtractFilePath(ParamStr(0)), ARQUIVO_CONFIGURACAO);
 end;
 
 procedure TViewMain.ConfigurarGrid;
@@ -245,6 +270,8 @@ begin
   var LTemVideo := FConectado and Assigned(FVideoSelecionado);
   var LSorteando := tmrSorteio.Enabled;
 
+  edtClientID.Enabled := not FConectado;
+  edtSecret.Enabled := not FConectado;
   btnConectar.Enabled := not FConectado;
   btnDesconectar.Enabled := FConectado and not FEnviandoVideo;
   btnAtualizarVideos.Enabled := FConectado;
@@ -267,10 +294,16 @@ end;
 
 procedure TViewMain.btnConectarClick(Sender: TObject);
 begin
-  Self.CarregarConfiguracao;
-  if YouTube.Authentication.ClientID.IsEmpty or YouTube.Authentication.Secret.IsEmpty then
-    raise Exception.Create('Informe o ClientID e o Secret do Google no arquivo:' + sLineBreak + FArquivoConfiguracao);
+  if Trim(edtClientID.Text).IsEmpty then
+    raise Exception.Create('Informe o ClientID do Google.');
 
+  if Trim(edtSecret.Text).IsEmpty then
+    raise Exception.Create('Informe o Secret do Google.');
+
+  // Grava os dados para que os campos já venham preenchidos na próxima abertura
+  Self.SalvarConfiguracao;
+  YouTube.Authentication.ClientID := Trim(edtClientID.Text);
+  YouTube.Authentication.Secret := Trim(edtSecret.Text);
   lbStatus.Caption := 'Conectando... confirme o acesso no navegador, se for solicitado.';
   YouTube.Connect;
 end;

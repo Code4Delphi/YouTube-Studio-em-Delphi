@@ -34,14 +34,14 @@ object ViewMain: TViewMain
       Height = 17
       Caption = 'Desconectado'
     end
-    object ClientID: TLabel
+    object lbClientID: TLabel
       Left = 12
       Top = 7
       Width = 44
       Height = 17
       Caption = 'ClientID'
     end
-    object Label2: TLabel
+    object lbSecret: TLabel
       Left = 315
       Top = 7
       Width = 36
@@ -54,7 +54,7 @@ object ViewMain: TViewMain
       Width = 120
       Height = 32
       Caption = 'Conectar'
-      TabOrder = 0
+      TabOrder = 2
       OnClick = btnConectarClick
     end
     object btnDesconectar: TButton
@@ -63,7 +63,7 @@ object ViewMain: TViewMain
       Width = 120
       Height = 32
       Caption = 'Desconectar'
-      TabOrder = 1
+      TabOrder = 3
       OnClick = btnDesconectarClick
     end
     object edtClientID: TEdit
@@ -71,14 +71,15 @@ object ViewMain: TViewMain
       Top = 26
       Width = 300
       Height = 25
-      TabOrder = 2
+      TabOrder = 0
     end
     object edtSecret: TEdit
       Left = 315
       Top = 26
       Width = 300
       Height = 25
-      TabOrder = 3
+      PasswordChar = '*'
+      TabOrder = 1
     end
   end
   object pageControlStudio: TPageControl
