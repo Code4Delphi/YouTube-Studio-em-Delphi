@@ -222,8 +222,9 @@ begin
     LIni.Free;
   end;
 
-  // Os tokens de acesso continuam fora da pasta do projeto
-  var LPastaTokens := TPath.Combine(TPath.GetHomePath, PASTA_TOKENS);
+  // Os tokens de acesso
+  //var LPastaTokens := TPath.Combine(TPath.GetHomePath, PASTA_TOKENS);
+  var LPastaTokens := ExtractFilePath(ParamStr(0));
   ForceDirectories(LPastaTokens);
   YouTube.PersistTokens.Location := plIniFile;
   YouTube.PersistTokens.Key := TPath.Combine(LPastaTokens, ARQUIVO_TOKENS);
@@ -245,14 +246,8 @@ function TViewMain.LocalizarArquivoConfiguracao: string;
 begin
   // Procura na pasta do executável e nas pastas acima dela (ex.: bin\ ou Win32\Debug\ dentro do projeto)
   var LPasta := ExtractFilePath(ParamStr(0));
-  for var I := 0 to NIVEIS_BUSCA_CONFIGURACAO do
-  begin
-    Result := TPath.Combine(LPasta, ARQUIVO_CONFIGURACAO);
-    if FileExists(Result) then
-      Exit;
-
-    LPasta := ExtractFilePath(ExcludeTrailingPathDelimiter(LPasta));
-  end;
+  if FileExists(Result) then
+    Exit;
 
   // Se não encontrar, cria o arquivo ao lado do executável
   Result := TPath.Combine(ExtractFilePath(ParamStr(0)), ARQUIVO_CONFIGURACAO);

@@ -443,7 +443,6 @@ object ViewMain: TViewMain
         Align = alRight
         Caption = ' Sorteio '
         TabOrder = 2
-        ExplicitHeight = 538
         object lbParticipantes: TLabel
           Left = 16
           Top = 28
@@ -517,8 +516,8 @@ object ViewMain: TViewMain
     end
   end
   object YouTube: TTMSFNCCloudGoogleYouTube
-    Left = 121
-    Top = 308
+    Left = 116
+    Top = 302
     Width = 26
     Height = 26
     Visible = True
