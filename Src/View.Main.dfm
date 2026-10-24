@@ -1,7 +1,7 @@
 object ViewMain: TViewMain
   Left = 0
   Top = 0
-  Caption = 'YouTube Studio em Delphi'
+  Caption = 'YouTube Studio em Delphi com TMSFNCCloudGoogleYouTube'
   ClientHeight = 680
   ClientWidth = 1120
   Color = clBtnFace
