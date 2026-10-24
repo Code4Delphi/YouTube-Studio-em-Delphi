@@ -42,7 +42,7 @@ O botão **Desconectar** apaga os tokens salvos em `%APPDATA%\YouTubeStudioDelph
 
 
 ## Vídeos de demonstração
-- Em breve
+- [Criei meu próprio YouTube Studio em Delphi (upload, edição e sorteio nos comentários)](https://www.youtube.com/watch?v=K53uT4jsXl0)
 
 
 ## Multiplataforma
